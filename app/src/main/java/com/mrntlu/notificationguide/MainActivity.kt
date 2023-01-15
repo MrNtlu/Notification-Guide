@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val extras = intent.extras
+        if (extras != null) {
+            Log.d("Test", "onCreate Bundle: ${extras.getString("test")}")
+        }
+
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
