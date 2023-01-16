@@ -2,15 +2,18 @@ package com.mrntlu.notificationguide
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.NotificationManager
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,14 +24,17 @@ import com.mrntlu.notificationguide.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    /*TODO
-     * https://developer.android.com/develop/ui/views/notifications/build-notification
-     * https://github.com/firebase/quickstart-android/tree/master/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/kotlin
+    /* Sources
+     * Badge https://developer.android.com/develop/ui/views/notifications/badges
+     * Deep Link https://medium.com/androiddevelopers/navigating-with-deep-links-910a4a6588c
+     *TODO
+     * https://developer.android.com/develop/ui/views/notifications/build-notification#add-reply-action
      * https://www.youtube.com/watch?v=LP623htmWcI&ab_channel=PhilippLackner
-     * https://developer.android.com/develop/ui/views/notifications/badges
+     * https://github.com/philipplackner/NotificationsGuide/tree/master/app
      */
 
     private lateinit var binding: ActivityMainBinding
+    private val navController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -48,14 +54,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val extras = intent.extras
-        if (extras != null) {
-            Log.d("Test", "onCreate Bundle: ${extras.getString("test")}")
-        }
-
         val navView: BottomNavigationView = binding.navView
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
@@ -66,8 +66,34 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            navView.visibility = if (destination.id == R.id.navigation_dashboard) View.GONE else View.VISIBLE
+        }
+
+        val extras = intent.extras
+        if (extras != null) {
+            val data = extras.getString("test")
+            val redirect = extras.getString("redirect")?.toBoolean()
+
+            Log.d("Test", "onCreate Bundle: ${extras.getString("test")} ${extras.getBoolean("redirect")} ${extras.getString("redirect")}")
+
+            if (redirect == true) {
+                navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
+                    "data" to data
+                ))
+            }
+        }
+
         getFCMToken()
         askNotificationPermission()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        if (intent?.getBooleanExtra("redirect", false) == true) {
+            navController.navigate(R.id.action_global_navigation_dashboard)
+        }
     }
 
     private fun getFCMToken() {
@@ -82,7 +108,6 @@ class MainActivity : AppCompatActivity() {
 
             // Log and toast
             Log.d("Test", "Token is $token")
-            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
         })
     }
 

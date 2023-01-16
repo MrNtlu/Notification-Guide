@@ -1,10 +1,10 @@
 # Notification-Guide
 
 Planning: 
-  * Setup FCM
-  * Permissions
-  * Send Local Notification
-  * Handle FCM notification when app on background & while app is running
-  * Handle badge count
-  * Handle notification click & reset/decrease badge count
-  * Deep linking(?)
+  - [x] Setup FCM
+  - [x] Permissions
+  - [x] Send Local Notification
+  - [x] Handle FCM notification when app on background & while app is running
+  - [x] Cancel Notification
+  - [ ] Notification Action
+  - [ ] Deep linking(?)

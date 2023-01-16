@@ -21,5 +21,5 @@
         android:id="@+id/navigation_notifications"
         android:name="com.mrntlu.notificationguide.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications" /><action android:id="@+id/action_global_navigation_dashboard" app:destination="@id/navigation_dashboard"/>
 </navigation>

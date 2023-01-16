@@ -1,28 +1,25 @@
 package com.mrntlu.notificationguide.service
 
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.media.AudioAttributes
 import android.media.RingtoneManager
-import android.net.Uri
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.mrntlu.notificationguide.MainActivity
 import com.mrntlu.notificationguide.R
+import com.mrntlu.notificationguide.utils.setGroupNotification
+import com.mrntlu.notificationguide.utils.setNotification
 
 class FirebaseMessagingService: FirebaseMessagingService() {
 
-    private val channelName = "Test Notification"
-    private val groupName = "Test Group Notification"
-    private val groupID = "test.notification"
+    companion object {
+        const val CHANNEL_NAME = "Test Notification"
+        const val GROUP_NAME = "Test Group Notification"
+        const val GROUP_ID = "test.notification"
+    }
 
     /**
      * Called if the FCM registration token is updated. This may occur if the security of
@@ -87,7 +84,6 @@ class FirebaseMessagingService: FirebaseMessagingService() {
 
     /**
      * Create and show a simple notification containing the received FCM message.
-     *
      * @param messageBody FCM message body received.
      */
     private fun sendNotification(
@@ -104,74 +100,38 @@ class FirebaseMessagingService: FirebaseMessagingService() {
             intent.putExtra(key, value)
         }
 
+        // Notification tap action
+        // Every notification should respond to a tap, usually to open an activity in your app that corresponds to the notification.
         val pendingIntent = PendingIntent.getActivity(
-            this, 0 /* Request code */, intent,
+            this, 0, intent,
             PendingIntent.FLAG_IMMUTABLE
         )
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        //Create Channel
-        // Since android Oreo notification channel is needed.
         val channelId = getString(R.string.notification_channel_id)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationManager.createNotificationChannelGroup(NotificationChannelGroup(groupID, groupName))
-        val channel = setChannel(channelId, defaultSoundUri)
-        notificationManager.createNotificationChannel(channel)
+        val notification = setNotification(
+            channelId,
+            title,
+            messageBody,
+            defaultSoundUri,
+            GROUP_ID,
+            pendingIntent
+        )
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_stat_test)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_stat_test))
-            .setColor(ContextCompat.getColor(applicationContext, R.color.notification))
-            .setContentTitle(title)
-            .setContentText(messageBody)
-            .setAutoCancel(true)
-            .setSound(defaultSoundUri)
-            .setGroup(groupID)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        val groupNotification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_stat_test)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_stat_test))
-            .setColor(ContextCompat.getColor(applicationContext, R.color.notification))
-            .setStyle(
-                NotificationCompat.InboxStyle()
-                    .addLine("$title $messageBody")
-                    .setBigContentTitle("New Notifications")
-                    .setSummaryText("Notifications Grouped")
-            )
-            .setGroup(groupID)
-            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-            .setGroupSummary(true)
-            .build()
-
+        val groupNotification = setGroupNotification(
+            channelId,
+            GROUP_ID,
+            true,
+            "$title $messageBody",
+            "New Notifications",
+            "Notifications Grouped"
+        )
 
         //ID of notification
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification.build())
         notificationManager.notify(0, groupNotification)
-    }
-
-    private fun setChannel(channelId: String, defaultSoundUri: Uri): NotificationChannel {
-        val attributes = AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-            .build()
-
-        val channel = NotificationChannel(
-            channelId,
-            channelName,
-            NotificationManager.IMPORTANCE_DEFAULT,
-        )
-        channel.apply {
-            enableLights(true)
-            enableVibration(true)
-            setShowBadge(true)
-            setSound(defaultSoundUri, attributes)
-            group = groupID
-        }
-
-        return channel
     }
 }
