@@ -19,6 +19,9 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         const val CHANNEL_NAME = "Test Notification"
         const val GROUP_NAME = "Test Group Notification"
         const val GROUP_ID = "test.notification"
+
+        const val PATH_EXTRA = "path"
+        const val DATA_EXTRA = "data"
     }
 
     /**
@@ -55,21 +58,12 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
         // [END_EXCLUDE]
 
-        // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("Test", "Remote Messages: ${remoteMessage.from}")
 
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             Log.d("Test", "Message data payload: ${remoteMessage.data}")
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                //scheduleJob()
-            } else {
-                // Handle message within 10 seconds
-                //handleNow()
-            }
         }
 
         // Check if message contains a notification payload.
@@ -77,9 +71,6 @@ class FirebaseMessagingService: FirebaseMessagingService() {
             Log.d("Test", "Message Notification Body: ${it.body}")
             sendNotification(it.title, it.body, remoteMessage.data)
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 
     /**
@@ -92,7 +83,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         data: Map<String, String>
     ) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
         for (i in 0 until data.size) {
             val key = data.keys.toList()[i]

@@ -56,7 +56,7 @@
         </service>
         <!-- [END firebase_service] -->
 
-        <!-- [Required to register receiver!] -->
+        <!-- [START broadcast_receiver] -->
         <receiver android:name=".service.NotificationActionBroadcastReceiver"/>
     </application>
 

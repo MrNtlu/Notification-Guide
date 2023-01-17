@@ -5,4 +5,9 @@
     <string name="title_notifications">Notifications</string>
 
     <string name="notification_channel_id">Test_Notification</string>
+    <string name="short_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tempus maximus erat, interdum feugiat quam blandit nec.</string>
+    <string name="long_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tempus maximus erat, interdum feugiat quam blandit nec. Aenean sed sapien hendrerit, convallis purus fermentum, luctus massa. Nullam vel libero dolor. Mauris purus nibh, mollis sit amet vulputate a, vehicula a enim. Aliquam hendrerit risus nec tempor iaculis. In sodales elit eu risus iaculis cursus. Nulla facilisi.
+
+Morbi vel tellus faucibus, tincidunt arcu non, iaculis tellus. Aenean vitae elit gravida, euismod erat at, fermentum turpis. Cras lacinia, eros condimentum lacinia posuere, quam elit lacinia ex, ac luctus sem metus in lacus. Donec tincidunt lectus vitae bibendum semper. Pellentesque vulputate ante orci, fringilla luctus arcu tincidunt id.
+    </string>
 </resources>

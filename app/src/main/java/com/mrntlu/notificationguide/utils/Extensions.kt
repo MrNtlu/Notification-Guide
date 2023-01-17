@@ -25,6 +25,7 @@ fun Context.setNotification(
         .setContentText(body)
         .setAutoCancel(true)
         .setSound(soundUri)
+        .setGroupSummary(false)
 
     if (groupId != null)
         notification.setGroup(groupId)

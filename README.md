@@ -6,5 +6,7 @@ Planning:
   - [x] Send Local Notification
   - [x] Handle FCM notification when app on background & while app is running
   - [x] Cancel Notification
-  - [ ] Notification Action
-  - [ ] Deep linking(?)
+  - [x] Notification Action
+
+Article:
+#Soon

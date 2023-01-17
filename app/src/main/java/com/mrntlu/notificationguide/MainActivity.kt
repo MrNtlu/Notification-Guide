@@ -21,17 +21,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mrntlu.notificationguide.databinding.ActivityMainBinding
+import com.mrntlu.notificationguide.service.FirebaseMessagingService.Companion.DATA_EXTRA
+import com.mrntlu.notificationguide.service.FirebaseMessagingService.Companion.PATH_EXTRA
 
 class MainActivity : AppCompatActivity() {
-
-    /* Sources
-     * Badge https://developer.android.com/develop/ui/views/notifications/badges
-     * Deep Link https://medium.com/androiddevelopers/navigating-with-deep-links-910a4a6588c
-     *TODO
-     * https://developer.android.com/develop/ui/views/notifications/build-notification#add-reply-action
-     * https://www.youtube.com/watch?v=LP623htmWcI&ab_channel=PhilippLackner
-     * https://github.com/philipplackner/NotificationsGuide/tree/master/app
-     */
 
     private lateinit var binding: ActivityMainBinding
     private val navController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
@@ -72,15 +65,14 @@ class MainActivity : AppCompatActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            val data = extras.getString("test")
-            val redirect = extras.getString("redirect")?.toBoolean()
+            val data = extras.getString(DATA_EXTRA)
 
-            Log.d("Test", "onCreate Bundle: ${extras.getString("test")} ${extras.getBoolean("redirect")} ${extras.getString("redirect")}")
-
-            if (redirect == true) {
-                navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
-                    "data" to data
-                ))
+            when(extras.getString(PATH_EXTRA)) {
+                "dashboard" -> {
+                    navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
+                        "data" to data
+                    ))
+                }
             }
         }
 
@@ -91,8 +83,19 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        if (intent?.getBooleanExtra("redirect", false) == true) {
-            navController.navigate(R.id.action_global_navigation_dashboard)
+        Log.d("Test", "onNewIntent: ${intent?.extras?.getString(PATH_EXTRA)} ${intent?.getStringExtra(PATH_EXTRA)} ${intent?.getStringExtra(DATA_EXTRA)}")
+
+        val extras = intent?.extras
+        if (extras != null) {
+            val data = extras.getString(DATA_EXTRA)
+
+            when(extras.getString(PATH_EXTRA)) {
+                "dashboard" -> {
+                    navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
+                        "data" to data
+                    ))
+                }
+            }
         }
     }
 
