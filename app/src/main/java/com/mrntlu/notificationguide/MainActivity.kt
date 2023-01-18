@@ -1,14 +1,12 @@
 package com.mrntlu.notificationguide
 
 import android.Manifest.permission.POST_NOTIFICATIONS
-import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -63,18 +61,7 @@ class MainActivity : AppCompatActivity() {
             navView.visibility = if (destination.id == R.id.navigation_dashboard) View.GONE else View.VISIBLE
         }
 
-        val extras = intent.extras
-        if (extras != null) {
-            val data = extras.getString(DATA_EXTRA)
-
-            when(extras.getString(PATH_EXTRA)) {
-                "dashboard" -> {
-                    navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
-                        "data" to data
-                    ))
-                }
-            }
-        }
+        handleIntentData(intent?.extras)
 
         getFCMToken()
         askNotificationPermission()
@@ -83,16 +70,17 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        Log.d("Test", "onNewIntent: ${intent?.extras?.getString(PATH_EXTRA)} ${intent?.getStringExtra(PATH_EXTRA)} ${intent?.getStringExtra(DATA_EXTRA)}")
+        handleIntentData(intent?.extras)
+    }
 
-        val extras = intent?.extras
+    private fun handleIntentData(extras: Bundle?) {
         if (extras != null) {
             val data = extras.getString(DATA_EXTRA)
 
             when(extras.getString(PATH_EXTRA)) {
                 "dashboard" -> {
                     navController.navigate(R.id.action_global_navigation_dashboard, bundleOf(
-                        "data" to data
+                        DATA_EXTRA to data
                     ))
                 }
             }

@@ -75,7 +75,9 @@ class FirebaseMessagingService: FirebaseMessagingService() {
 
     /**
      * Create and show a simple notification containing the received FCM message.
+     * @param title FCM message title
      * @param messageBody FCM message body received.
+     * @param data FCM message data
      */
     private fun sendNotification(
         title: String?,

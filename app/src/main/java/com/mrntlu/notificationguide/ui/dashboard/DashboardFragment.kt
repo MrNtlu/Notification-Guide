@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mrntlu.notificationguide.databinding.FragmentDashboardBinding
+import com.mrntlu.notificationguide.service.FirebaseMessagingService
+import com.mrntlu.notificationguide.service.FirebaseMessagingService.Companion.DATA_EXTRA
 
 class DashboardFragment : Fragment() {
 
@@ -22,7 +24,7 @@ class DashboardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getString("data")
+            data = it.getString(DATA_EXTRA)
         }
     }
 

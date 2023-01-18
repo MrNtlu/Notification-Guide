@@ -1,12 +1,3 @@
 # Notification-Guide
 
-Planning: 
-  - [x] Setup FCM
-  - [x] Permissions
-  - [x] Send Local Notification
-  - [x] Handle FCM notification when app on background & while app is running
-  - [x] Cancel Notification
-  - [x] Notification Action
-
-Article:
-#Soon
+https://burakdev.medium.com/fcm-push-notification-local-notification-13117f447255
